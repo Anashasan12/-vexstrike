@@ -20,7 +20,7 @@ canvas{display:block}
 #hpf{height:100%;width:100%;background:#4ade80;transition:width .15s}
 #ammo{right:24px;bottom:24px;text-align:right;font-size:34px}
 #ammo small{display:block;font-size:15px;opacity:.85}
-#bar{left:50%;bottom:20px;transform:translateX(-50%);display:flex;gap:6px;font-size:13px}
+#bar{left:50%;bottom:20px;transform:translateX(-50%);display:flex;flex-wrap:wrap;justify-content:center;max-width:62vw;gap:4px;font-size:11px}
 #bar span{background:#0008;padding:4px 8px;border-radius:5px;border:2px solid transparent}#bar .a{border-color:var(--ac);color:var(--ac)}
 #sc{left:50%;top:14px;transform:translateX(-50%);font-size:21px;white-space:nowrap}
 #dmg{position:absolute;inset:0;box-shadow:inset 0 0 120px 30px #f00;opacity:0;transition:opacity .25s}
@@ -61,11 +61,9 @@ input{font:inherit;font-size:17px;padding:6px 10px;border-radius:6px;border:3px 
 </div>
 <div id="menu">
   <h1>VOXEL COMBAT 3</h1>
-  <div class="row" id="acct-out"><input id="nm" maxlength="14" placeholder="Username" autocomplete="username"><input id="pw" type="password" maxlength="64" placeholder="Password" autocomplete="current-password"><button class="btn" id="li">LOG IN</button><button class="btn" id="su">CREATE ACCOUNT</button></div>
-  <div class="row" id="acct-in" style="display:none"><span id="badge" style="font-size:18px"></span><b id="who" style="font-size:20px"></b><button class="btn" id="lo">LOG OUT</button></div>
-  <div class="row"><span style="font-size:20px">🪙 <b id="mc">0</b></span></div>
+  <div class="row"><input id="nm" maxlength="14" placeholder="Username"><button class="btn" id="sv">SET NAME</button><span id="badge" style="font-size:18px"></span><span style="font-size:20px">🪙 <b id="mc">0</b></span></div>
   <div class="msg" id="nmsg"></div>
-  <div class="row" id="tabs"><button class="btn on" data-t="play">PLAY</button><button class="btn" data-t="find">FIND PLAYERS</button><button class="btn" data-t="profile">PROFILE</button><button class="btn" data-t="store">WEAPON STORE</button></div>
+  <div class="row" id="tabs"><button class="btn on" data-t="play">PLAY</button><button class="btn" data-t="find">FIND PLAYERS · SOON</button><button class="btn" data-t="profile">PROFILE</button><button class="btn" data-t="store">WEAPON STORE</button></div>
   <div class="tab on" id="t-play">
     <div class="row" id="maps">
       <button class="btn map on" data-m="yard"><i style="background:linear-gradient(#8fd3ff,#7ccf7a)"></i>CRATE YARD</button>
@@ -74,18 +72,19 @@ input{font:inherit;font-size:17px;padding:6px 10px;border-radius:6px;border:3px 
       <button class="btn map" data-m="lunar"><i style="background:linear-gradient(#03040a,#3a7bd5 55%,#8e8e9a)"></i>LUNAR BASE</button>
       <button class="btn map" data-m="desert"><i style="background:linear-gradient(#f3d9a4,#c98b4f)"></i>DESERT RUINS</button>
     </div>
+    <div class="msg" style="color:#ffd23f;font-size:15px">🌐 ONLINE MULTIPLAYER · COMING SOON</div>
     <div class="row" id="modes">
       <button class="btn on" data-mode="solo">SOLO vs BOTS</button>
-      <button class="btn off mpb" data-mode="pub">PUBLIC LOBBY</button>
-      <button class="btn off mpb" data-mode="priv">MY PRIVATE LOBBY</button>
+      <button class="btn off mpb" data-mode="pub">PUBLIC LOBBY · COMING SOON</button>
+      <button class="btn off mpb" data-mode="priv">PRIVATE LOBBY · COMING SOON</button>
     </div>
-    <div class="msg" id="note"></div>
+    <div class="msg" id="note">Online multiplayer is coming soon! For now, fight the bots and earn coins.</div>
     <button class="btn go" id="play">PLAY</button>
-    <p class="msg"><b>WASD</b> move · <b>SHIFT</b> sprint · <b>SPACE</b> jump · <b>CLICK</b> shoot · <b>RIGHT-CLICK</b> aim · <b>R</b> reload · <b>1-9</b>/wheel switch weapon · <b>B</b> store<br>Kills drop 🪙 coins and ammo boxes. Spend coins in the weapon store. Pads launch you skyward.</p>
+    <p class="msg"><b>WASD</b> move · <b>SHIFT</b> sprint · <b>SPACE</b> jump · <b>CLICK</b> shoot · <b>RIGHT-CLICK</b> aim · <b>R</b> reload · <b>1-9</b>/<b>Q</b>/<b>E</b>/wheel switch weapon · <b>B</b> store<br>Kills drop 🪙 coins and ammo boxes. Spend coins in the weapon store. Pads launch you skyward.</p>
   </div>
   <div class="tab" id="t-find">
     <div class="row"><input id="q" placeholder="Search username"><button class="btn" id="qs">SEARCH</button></div>
-    <div class="msg" id="qmsg">Log in, then search a username and jump into their lobby.</div>
+    <div class="msg" id="qmsg">Multiplayer and player search are coming soon!</div>
     <div id="res" style="width:100%"></div>
   </div>
   <div class="tab" id="t-profile"><div id="prof" style="width:100%"></div></div>
@@ -197,7 +196,15 @@ const WL=[
  {id:'sniper',n:'SNIPER',price:600,mag:5,rate:1.1,d:100,hd:200,sp:0,pl:1,rl:2.3,auto:0,snd:260,col:0x4d96ff,zoom:1,info:'One shot. Right-click to scope',len:2.2},
  {id:'plasma',n:'PLASMA GUN',price:800,mag:25,rate:.14,d:34,hd:90,sp:.01,pl:1,rl:1.6,auto:1,snd:420,col:0x00f0ff,tc:0x00f0ff,info:'Energy bolts, hits hard'},
  {id:'minigun',n:'MINIGUN',price:1200,mag:100,rate:.035,d:11,hd:22,sp:.05,pl:1,rl:3,auto:1,snd:130,col:0xe63946,info:'Bullet hose',len:1.4},
- {id:'rocket',n:'ROCKET LAUNCHER',price:1500,mag:3,rate:1.2,d:60,hd:60,sp:.002,pl:1,rl:2.4,auto:0,snd:60,col:0xff8a00,tc:0xff8a00,splash:1,info:'Explosive splash damage',len:1.5}
+ {id:'rocket',n:'ROCKET LAUNCHER',price:1500,mag:3,rate:1.2,d:60,hd:60,sp:.002,pl:1,rl:2.4,auto:0,snd:60,col:0xff8a00,tc:0xff8a00,splash:1,info:'Explosive splash damage',len:1.5},
+ {id:'dual',n:'DUAL PISTOLS',price:500,mag:24,rate:.1,d:20,hd:55,sp:.025,pl:1,rl:1.5,auto:1,snd:230,col:0xeeeeee,info:'Two guns, double the fun',len:.7},
+ {id:'combat',n:'COMBAT SHOTGUN',price:900,mag:8,rate:.38,d:11,hd:22,sp:.055,pl:6,rl:2,auto:1,snd:100,col:0xff7a1a,info:'Rapid-fire auto shotgun'},
+ {id:'dmr',n:'MARKSMAN RIFLE',price:700,mag:12,rate:.33,d:55,hd:130,sp:.003,pl:1,rl:1.8,auto:0,snd:190,col:0x7dd3fc,info:'Long-range semi-auto',len:1.5},
+ {id:'crossbow',n:'CROSSBOW',price:650,mag:4,rate:.9,d:90,hd:180,sp:0,pl:1,rl:2,auto:0,snd:350,col:0x8b5a2b,tc:0xc8a165,info:'Silent and deadly',len:1.2},
+ {id:'lmg',n:'LIGHT MACHINE GUN',price:1000,mag:60,rate:.07,d:20,hd:50,sp:.025,pl:1,rl:2.8,auto:1,snd:120,col:0x94a3b8,info:'Heavy sustained fire',len:1.3},
+ {id:'grenade',n:'GRENADE LAUNCHER',price:1100,mag:5,rate:.7,d:30,hd:30,sp:.01,pl:1,rl:2.2,auto:0,snd:80,col:0x65a30d,tc:0x84cc16,splash:1,sr:4,sd:90,info:'Blast radius, great vs groups',len:1.1},
+ {id:'laser',n:'LASER BLASTER',price:1800,mag:120,rate:.045,d:14,hd:32,sp:.004,pl:1,rl:2.4,auto:1,snd:520,col:0xff2bd6,tc:0xff2bd6,info:'Rapid laser fire',len:1.1},
+ {id:'rail',n:'RAILGUN',price:2500,mag:3,rate:1.6,d:150,hd:250,sp:0,pl:1,rl:2.6,auto:0,snd:40,col:0x00f0ff,tc:0x00f0ff,pierce:1,info:'Pierces through enemies',len:2}
 ];
 const WD={};WL.forEach(w=>WD[w.id]=w);
 
@@ -209,7 +216,7 @@ const rankFor=k=>RANKS.filter(r=>k>=r[1]).pop()[0];
 const P={pos:new THREE.Vector3(0,0,8),vy:0,yaw:0,pitch:0,ground:true,hp:100,cur:'rifle',reload:0,fire:0,bq:0,bt:0,prot:0,kills:0,deaths:0,streak:0,
   coins:SAVE.coins==null?100:SAVE.coins,owned:SAVE.owned||['rifle','pistol'],name:SAVE.name||('Player'+(Math.random()*900+100|0)),reg:SAVE.reg||'',
   hue:Math.random(),mag:{},res:{},hq:[],hseq:0,fxs:0,fx:null,ks:0,kb:''};
-function persist(skip){try{localStorage.setItem('bs3',JSON.stringify({coins:P.coins,owned:P.owned,name:P.name,reg:P.reg,icon:P.icon,title:P.title,st:ST}))}catch(e){}if(!skip)netSave()}
+function persist(){try{localStorage.setItem('bs3',JSON.stringify({coins:P.coins,owned:P.owned,name:P.name,reg:P.reg,icon:P.icon,title:P.title,st:ST}))}catch(e){}}
 const ST=Object.assign({k:0,d:0,m:0,hs:0,bs:0,lb:0},SAVE.st||{});
 P.icon=SAVE.icon||'🦊';P.rankTop=rankFor(ST.k);P.title=SAVE.title||P.rankTop;
 function addKill(hd){
@@ -245,14 +252,24 @@ function tag(text){
   const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),fog:false,depthTest:false}));s.scale.set(2,.5,1);s.position.y=2.15;s.renderOrder=9;return s;
 }
 const bots=[];
-function makeBot(){const g=figure(new THREE.Color().setHSL(Math.random(),.7,.55));g.userData.parts.forEach(m=>m.userData.bot=g);Object.assign(g.userData,{hp:100,t:Math.random(),dir:1,sw:0});respawnBot(g);bots.push(g)}
-function respawnBot(b){const s=spawnPoint([P.pos]);b.position.set(s.x,0,s.z);b.userData.hp=100;b.visible=true}
+const BT={
+ grunt:{hp:100,spd:4,keep:[9,14],fire:[.5,.9],dmg:[7,12],acc:.8,k:.011,range:42,col:null,bonus:0},
+ rusher:{hp:80,spd:6.6,keep:[3,6],fire:[.5,.85],dmg:[11,16],acc:.85,k:.025,range:20,col:0xff7a1a,bonus:2},
+ sniper:{hp:70,spd:3,keep:[26,34],fire:[1.7,2.5],dmg:[26,36],acc:.88,k:.004,range:70,col:0xa855f7,bonus:4}
+};
+function makeBot(){
+  const r=Math.random(),ty=r<.55?'grunt':r<.82?'rusher':'sniper',T=BT[ty];
+  const g=figure(T.col!=null?new THREE.Color(T.col):new THREE.Color().setHSL(Math.random(),.7,.55));
+  g.userData.parts.forEach(m=>m.userData.bot=g);
+  Object.assign(g.userData,{ty,T,hp:T.hp,t:Math.random()+.5,dir:1,sw:0});respawnBot(g);bots.push(g);
+}
+function respawnBot(b){const s=spawnPoint([P.pos]);b.position.set(s.x,0,s.z);b.userData.hp=b.userData.T.hp;b.userData.t=1+Math.random();b.visible=true}
 function clearBots(){bots.forEach(b=>scene.remove(b));bots.length=0}
 
 // ---------- Loot drops (local to the killer) ----------
 const drops=[],fxs=[];
-function dropLoot(pos){
-  const n=4+(Math.random()*3|0);
+function dropLoot(pos,bonus=0){
+  const n=4+(Math.random()*3|0)+bonus;
   for(let i=0;i<n;i++)addDrop('coin',pos);
   if(Math.random()<.65)addDrop('ammo',pos);
 }
@@ -272,80 +289,37 @@ function collect(d){
 let room=null,db=null,uid=null,nroom=null,myPeer=null,lastAtk=null,curRoom='',unsubs=[];const avatars=new Map();
 const slug=n=>String(n).toLowerCase().replace(/[^a-z0-9_]/g,'');
 const okRoom=r=>/^[a-z0-9][a-z0-9_.-]{0,47}$/.test(r)&&(r.startsWith('r-')||r.startsWith('pub-'));
-// ----- server connection (accounts + lobbies) -----
-const SERVER='// ----- server connection (accounts + lobbies) -----
-const SERVER='wss://voxelcombat.vercel.app';
-const configured=true;
-
-' // <-- PUT YOUR RENDER SERVER ADDRESS HERE (starts with wss://)
-const configured=!/YOUR-SERVER/.test(SERVER);
-let ws=null,wsOpen=false,myId=null,authed=false,tok='',peerCb=null,lastSnap=null,joinRes=null,joinRej=null,saveTimer=0;
-try{tok=localStorage.getItem('bs3tok')||''}catch(e){}
-const setNet=t=>{$('nmsg').textContent=t};
-const wsSend=o=>{if(ws&&wsOpen)ws.send(JSON.stringify(o))};
-function netSave(){if(!authed)return;clearTimeout(saveTimer);saveTimer=setTimeout(()=>wsSend({t:'save',profile:{coins:P.coins,owned:P.owned,icon:P.icon,title:P.title,st:ST}}),1500)}
-function connect(){
-  if(!configured){setNet('Online play is off: set the server address in the game file (see instructions).');return}
-  setNet('Connecting to server... (the first connection can take 30 seconds)');
-  try{ws=new WebSocket(SERVER)}catch(e){setNet('Cannot connect to the server.');return}
-  ws.onopen=()=>{wsOpen=true;setNet('');if(tok)wsSend({t:'resume',token:tok})};
-  ws.onmessage=e=>{let m;try{m=JSON.parse(e.data)}catch(x){return}onMsg(m)};
-  ws.onclose=()=>{wsOpen=false;const was=authed;authed=false;refreshAcct();if(nroom)leaveRoom();if(was)setNet('Connection lost. Reconnecting...');setTimeout(connect,4000)};
+(async()=>{
+  const bad=()=>{document.querySelectorAll('.mpb').forEach(b=>b.title='Multiplayer needs a signed-in claude.ai view');$('note').textContent='Multiplayer lobbies are unavailable in this view. Open the link while signed in to claude.ai.'};
+  return; /* multiplayer coming soon */
+  try{room=await claude.use('room')}catch(e){}
+  try{const u=await claude.use('user');uid=u?await u.id():null}catch(e){}
+  try{db=await claude.use('db')}catch(e){}
+  if(room)document.querySelectorAll('.mpb').forEach(b=>b.classList.remove('off'));else bad();
+  if(!(db&&uid))$('qmsg').textContent='Player search is unavailable here. You can still join a friend by typing their exact username and pressing SEARCH.';
+  heartbeat();
+})();
+async function heartbeat(){
+  if(!(db&&uid&&P.reg))return;
+  try{await db.doc('players/'+uid).set({name:P.reg,nl:P.reg.toLowerCase(),ts:Date.now(),room:curRoom,map:selMap})}catch(e){}
 }
-function snapToCh(m){return{peers:m.peers.map(q=>({peer:q.id,sameTab:q.id===m.id,presence:q.pr||{}})),left:[]}}
-function onMsg(m){
-  if(m.t==='auth'){
-    if(m.ok){authed=true;tok=m.token;try{localStorage.setItem('bs3tok',tok)}catch(e){}P.name=m.profile.name;applyProfile(m.profile);refreshAcct();setNet('Logged in as '+P.name)}
-    else{if(m.err==='session'){tok='';try{localStorage.removeItem('bs3tok')}catch(e){}}else setNet(m.err||'Login failed')}
-  }
-  else if(m.t==='results')showResults(m.rows||[]);
-  else if(m.t==='joined'){if(m.ok){myId=m.id;if(joinRes)joinRes(nroomShim)}else if(joinRej)joinRej(new Error(m.err||'join failed'));joinRes=joinRej=null}
-  else if(m.t==='snap'){if(peerCb)peerCb(snapToCh(m));else lastSnap=m}
-  else if(m.t==='u'&&peerCb)peerCb({peers:[{peer:m.id,sameTab:false,presence:m.pr||{}}],left:[]});
-  else if(m.t==='left'&&peerCb)peerCb({peers:[],left:[{peer:m.id}]});
-  else if(m.t==='kicked'){authed=false;refreshAcct();if(nroom)leaveRoom();setNet('You logged in on another device, so this one was logged out.')}
-}
-// same tiny interface the game code already uses for lobbies
-const nroomShim={
-  onPeers(cb){peerCb=cb;if(lastSnap){cb(snapToCh(lastSnap));lastSnap=null}return()=>{peerCb=null}},
-  presence(p){wsSend({t:'pres',p});return Promise.resolve()},
-  leave(){wsSend({t:'leave'});peerCb=null;lastSnap=null;return Promise.resolve()}
-};
-room={join(name){return new Promise((res,rej)=>{
-  if(!authed||!wsOpen)return rej(new Error('offline'));
-  joinRes=res;joinRej=rej;wsSend({t:'join',room:name,map:selMap});setTimeout(()=>rej(new Error('timeout')),8000)})}};
-function applyProfile(pf){
-  if(!pf)return;
-  P.coins=num(pf.coins);P.owned=(Array.isArray(pf.owned)?pf.owned:[]).filter(id=>WD[id]);
-  ['rifle','pistol'].forEach(id=>{if(!P.owned.includes(id))P.owned.push(id)});
-  if(ICONS.includes(pf.icon))P.icon=pf.icon;
-  Object.assign(ST,{k:0,d:0,m:0,hs:0,bs:0,lb:0},pf.st||{});
-  P.rankTop=rankFor(ST.k);P.title=RANKS.some(r=>r[0]===pf.title&&ST.k>=r[1])?pf.title:P.rankTop;
-  P.owned.forEach(id=>{if(P.mag[id]==null){P.mag[id]=WD[id].mag;P.res[id]=WD[id].mag*3}});
-  if(!P.owned.includes(P.cur))sw('rifle');
-  persist(true);updateHUD();renderStore();renderProfile();
-}
-function resetProfile(){
-  P.coins=100;P.owned=['rifle','pistol'];P.icon='🦊';Object.assign(ST,{k:0,d:0,m:0,hs:0,bs:0,lb:0});P.rankTop='Rookie';P.title='Rookie';sw('rifle');persist(true);updateHUD();renderStore();renderProfile();
-}
-const defNote=()=>authed?'Pick a lobby to play online, or use FIND PLAYERS to join a friend.':'Log in or create an account to play online. Solo vs Bots works without one.';
-function refreshAcct(){
-  $('acct-out').style.display=authed?'none':'flex';$('acct-in').style.display=authed?'flex':'none';$('who').textContent=P.name;
-  document.querySelectorAll('.mpb').forEach(b=>b.classList.toggle('off',!authed));
-  if(!authed&&selMode!=='solo'){selMode='solo';document.querySelectorAll('#modes .btn').forEach(x=>x.classList.toggle('on',x.dataset.mode==='solo'))}
-  if(!TIPS[selMap])$('note').textContent=defNote();
-  updateHUD();
-}
-function doAuth(kind){
-  const n=cleanName($('nm').value),pw=$('pw').value;
-  if(n.length<3){setNet('Username: 3-14 letters, numbers or _');return}
-  if(pw.length<6){setNet('Password must be at least 6 characters');return}
-  if(!wsOpen){setNet(configured?'Not connected to the server yet. Wait a moment and try again.':'Server address is not set in the game file.');return}
-  setNet('Please wait...');const o={t:kind,name:n,pw};
-  if(kind==='register')o.profile={coins:P.coins,owned:P.owned,icon:P.icon,title:P.title,st:ST};
-  wsSend(o);$('pw').value='';
+setInterval(heartbeat,15000);
+async function register(name){
+  if(!(db&&uid)){P.reg=name;persist();return true}
+  try{
+    const snap=await db.collection('players').get();
+    if(snap.docs.some(d=>d.id!==uid&&String(d.data().nl)===name.toLowerCase()))return false;
+    P.reg=name;await heartbeat();persist();return true;
+  }catch(e){P.reg=name;persist();return true}
 }
 function cleanName(v){return v.replace(/[^A-Za-z0-9_]/g,'').slice(0,14)}
+async function saveName(){
+  const n=cleanName($('nm').value);
+  if(n.length<3){$('nmsg').textContent='Username must be 3-14 letters, numbers or _';return false}
+  const ok=await register(n);
+  if(!ok){$('nmsg').textContent='"'+n+'" is already taken. Pick another.';return false}
+  P.name=n;$('nm').value=n;persist();$('nmsg').textContent='Username saved: '+n+(db&&uid?' (friends can find you)':'');return true;
+}
 async function leaveRoom(){
   unsubs.forEach(u=>{try{u()}catch(e){}});unsubs=[];
   if(nroom){try{await nroom.leave()}catch(e){}nroom=null}
@@ -366,8 +340,8 @@ function handlePeers(ch){
       a.hs=(Array.isArray(pr.h)?pr.h:[]).reduce((m,e)=>Math.max(m,num(e&&e[0])),0);
       a.fxs=Array.isArray(pr.fx)?pr.fx[0]:0;a.ks=num(pr.ks);a.g.position.set(num(pr.x),num(pr.y),num(pr.z));
     }
-    const nm=safe(pr.name)||'Player',ic=safe(pr.icon,4);
-    if(nm!==a.name||ic!==a.ic){if(a.tg)a.g.remove(a.tg);a.name=nm;a.ic=ic;a.tg=tag((ic?ic+' ':'')+nm);a.g.add(a.tg)}
+    const nm=safe(pr.name)||'Player';
+    if(nm!==a.name){if(a.tg)a.g.remove(a.tg);a.name=nm;a.tg=tag(nm);a.g.add(a.tg)}
     a.tx=num(pr.x);a.ty=num(pr.y);a.tz=num(pr.z);a.yaw=num(pr.yaw);a.hp=pr.hp===undefined?100:num(pr.hp);a.k=num(pr.k);
     // hits aimed at me (carried in the shooter's presence, so any viewer can play)
     if(Array.isArray(pr.h)){let mx=a.hs;for(const e of pr.h){if(!Array.isArray(e))continue;const s=num(e[0]);if(s>a.hs){if(e[1]===myPeer){lastAtk=p.peer;damage(Math.min(250,Math.max(0,num(e[2]))))}mx=Math.max(mx,s)}}a.hs=mx}
@@ -402,12 +376,12 @@ function startReload(){const w=WD[P.cur];if(P.reload>0||P.mag[w.id]>=w.mag)retur
 function hitmark(hs){const h=$('hit');h.style.opacity=1;h.style.borderColor=hs?'#ffd23f':'#f33';setTimeout(()=>h.style.opacity=0,120);beep(hs?900:500,.08,'triangle')}
 function botDmg(b,dm,hd){
   b.userData.hp-=dm;hitmark(hd);
-  if(b.userData.hp<=0&&b.visible){b.visible=false;addKill(hd);feed(hd?'HEADSHOT!':'Bot eliminated');P.hp=Math.min(100,P.hp+25);dropLoot(b.position);updateHUD();setTimeout(()=>respawnBot(b),2500)}
+  if(b.userData.hp<=0&&b.visible){b.visible=false;addKill(hd);feed((hd?'HEADSHOT! ':'')+({sniper:'Sniper',rusher:'Rusher'}[b.userData.ty]||'Bot')+' eliminated');P.hp=Math.min(100,P.hp+15);dropLoot(b.position,b.userData.T.bonus);updateHUD();setTimeout(()=>respawnBot(b),2000)}
 }
-function explode(pt,dealt){
-  const R=5,m=new THREE.Mesh(new THREE.SphereGeometry(1,12,8),new THREE.MeshBasicMaterial({color:0xff8a00,transparent:true,opacity:.8}));m.position.copy(pt);scene.add(m);fxs.push({m,t:.35});
-  bots.forEach(b=>{if(!b.visible)return;const d=b.position.distanceTo(pt);if(d<R)botDmg(b,110*(1-d/R),false)});
-  avatars.forEach((a,k)=>{if(a.hp<=0)return;const d=a.g.position.distanceTo(pt);if(d<R)dealt[k]=(dealt[k]||0)+110*(1-d/R)});
+function explode(pt,dealt,w){
+  const R=w.sr||5,D=w.sd||110,m=new THREE.Mesh(new THREE.SphereGeometry(1,12,8),new THREE.MeshBasicMaterial({color:0xff8a00,transparent:true,opacity:.8}));m.position.copy(pt);scene.add(m);fxs.push({m,t:.35});
+  bots.forEach(b=>{if(!b.visible)return;const d=b.position.distanceTo(pt);if(d<R)botDmg(b,D*(1-d/R),false)});
+  avatars.forEach((a,k)=>{if(a.hp<=0)return;const d=a.g.position.distanceTo(pt);if(d<R)dealt[k]=(dealt[k]||0)+D*(1-d/R)});
   beep(70,.4,'sawtooth',.1);
 }
 function shoot(){
@@ -427,11 +401,19 @@ function fire(){
     ray.setFromCamera({x:(Math.random()-.5)*sp*2,y:(Math.random()-.5)*sp*2},camera);
     const hs=ray.intersectObjects(all,false),end=new THREE.Vector3();
     if(hs.length){
-      end.copy(hs[0].point);const o=hs[0].object,hd=!!o.userData.head,dm=hd?w.hd:w.d;
-      if(o.userData.bot)botDmg(o.userData.bot,dm,hd);
-      else if(o.userData.rp){const k=o.userData.rp;dealt[k]=(dealt[k]||0)+dm;hitmark(hd)}
+      let last=hs[0];const seen=new Set();
+      for(const h of hs){
+        const o=h.object,hd=!!o.userData.head,dm=hd?w.hd:w.d,key=o.userData.bot||o.userData.rp;
+        if(key){if(seen.has(key))continue;seen.add(key)}
+        last=h;
+        if(o.userData.bot)botDmg(o.userData.bot,dm,hd);
+        else if(o.userData.rp){const k=o.userData.rp;dealt[k]=(dealt[k]||0)+dm;hitmark(hd)}
+        else break;
+        if(!w.pierce)break;
+      }
+      end.copy(last.point);
     }else ray.ray.at(70,end);
-    if(w.splash)explode(end,dealt);
+    if(w.splash)explode(end,dealt,w);
     if(!first)first=end.clone();
     if(i<3||w.pl===1)tracer(origin,end,w.tc);
   }
@@ -455,13 +437,14 @@ function updateHUD(){
   $('hpn').textContent=Math.max(0,P.hp|0);$('hpf').style.width=Math.max(0,P.hp)+'%';$('hpf').style.background=P.hp>50?'#4ade80':P.hp>25?'#facc15':'#ef4444';
   $('am').textContent=P.mag[w.id]+' / '+P.res[w.id];if(P.reload<=0)$('wn').textContent=w.n;
   $('me').textContent=P.icon+' '+P.name+' · '+P.title;$('badge').textContent=P.icon+' '+P.title;$('k').textContent=P.kills;$('d').textContent=P.deaths;$('s').textContent=P.streak;$('c').textContent=P.coins;$('mc').textContent=P.coins;
-  $('bar').innerHTML='';hotbar().forEach((x,i)=>{const s=document.createElement('span');if(x.id===P.cur)s.className='a';s.textContent=(i+1)+' '+x.n;$('bar').append(s)});
+  $('bar').innerHTML='';hotbar().forEach((x,i)=>{const s=document.createElement('span');if(x.id===P.cur)s.className='a';s.textContent=(i<9?(i+1)+' ':'')+x.n;$('bar').append(s)});
 }
 
 // ---------- Input ----------
 addEventListener('keydown',e=>{
   keys[e.code]=true;if(e.code==='KeyR')startReload();
   if(e.code.startsWith('Digit')){const w=hotbar()[+e.code[5]-1];if(w)sw(w.id)}
+  if((e.code==='KeyQ'||e.code==='KeyE')&&locked){const h=hotbar(),i=h.findIndex(x=>x.id===P.cur);sw(h[(i+(e.code==='KeyE'?1:h.length-1))%h.length].id)}
   if(e.code==='KeyB'&&locked){document.exitPointerLock();showTab('store')}
   if(e.code==='Space')e.preventDefault();
 });
@@ -515,21 +498,27 @@ function lootUpdate(dt){
   if(R.textContent!==t)R.textContent=t;
 }
 function updateBots(dt){
-  const eye=camera.position;
+  const eye=camera.position,diff=1+Math.min(.6,P.kills*.012);   // bots get tougher as you rack up kills
   for(const b of bots){
-    if(!b.visible)continue;const u=b.userData;u.t-=dt;u.sw-=dt;
+    if(!b.visible)continue;const u=b.userData,T=u.T;u.t-=dt;u.sw-=dt;
     const dx=P.pos.x-b.position.x,dz=P.pos.z-b.position.z,dist=Math.hypot(dx,dz)||1;b.rotation.y=Math.atan2(-dx,-dz);
-    if(u.sw<=0){u.dir=Math.random()<.5?1:-1;u.sw=1+Math.random()*2}
-    const nx=dx/dist,nz=dz/dist;let mx=0,mz=0;
-    if(dist>12){mx=nx*3.2;mz=nz*3.2}else if(dist<6){mx=-nx*2.5;mz=-nz*2.5}
-    mx+=-nz*u.dir*2.2;mz+=nx*u.dir*2.2;
+    if(u.sw<=0){u.dir=Math.random()<.5?1:-1;u.sw=.6+Math.random()*1.6}
+    const nx=dx/dist,nz=dz/dist,sp=T.spd*(1+(diff-1)*.5);let mx=0,mz=0;
+    if(dist>T.keep[1]){mx=nx*sp;mz=nz*sp}else if(dist<T.keep[0]){mx=-nx*sp*.8;mz=-nz*sp*.8}
+    mx+=-nz*u.dir*sp*.6;mz+=nx*u.dir*sp*.6;
     const px=b.position.x+mx*dt,pz=b.position.z+mz*dt;
     if(!hit(px,0,b.position.z,.5)&&Math.abs(px)<B-1)b.position.x=px;else u.dir*=-1;
     if(!hit(b.position.x,0,pz,.5)&&Math.abs(pz)<B-1)b.position.z=pz;else u.dir*=-1;
-    if(u.t<=0&&dist<40){
-      u.t=.6+Math.random()*.6;const o=new THREE.Vector3(b.position.x,1.5,b.position.z),dir=eye.clone().sub(o),L=dir.length();
+    if(u.t<=0&&dist<T.range){
+      u.t=(T.fire[0]+Math.random()*(T.fire[1]-T.fire[0]))/diff;
+      const o=new THREE.Vector3(b.position.x,1.5,b.position.z),dir=eye.clone().sub(o),L=dir.length();
       ray.set(o,dir.normalize());ray.far=L;const blocked=ray.intersectObjects(obst,false).length>0;ray.far=Infinity;
-      if(!blocked){beep(140,.06,'square',.02);if(Math.random()<Math.max(.12,.55-dist/80))damage(7+(Math.random()*5|0))}
+      if(!blocked){
+        beep(u.ty==='sniper'?300:140,.07,'square',.03);
+        const tip=eye.clone();tip.y-=.3;tracer(o,tip,u.ty==='sniper'?0xd946ef:0xff5555);
+        const acc=Math.min(.95,Math.max(.2,(T.acc-dist*T.k)*(1+(diff-1)*.4)));
+        if(Math.random()<acc)damage(Math.round((T.dmg[0]+Math.random()*(T.dmg[1]-T.dmg[0]))*(1+(diff-1)*.3)));
+      }
     }
   }
 }
@@ -549,15 +538,13 @@ let selMap='yard',selMode='solo',applied='';
 function showTab(t){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.id==='t-'+t));document.querySelectorAll('#tabs .btn').forEach(x=>x.classList.toggle('on',x.dataset.t===t))}
 document.querySelectorAll('#tabs .btn').forEach(b=>b.onclick=()=>{showTab(b.dataset.t);if(b.dataset.t==='store')renderStore();if(b.dataset.t==='profile')renderProfile()});
 const TIPS={lunar:'🌙 Low gravity: jump high and use the big pads to reach the rooftops!',desert:'🏜️ 8 hidden loot boxes: behind ruins, beside rocks, atop the mesas. Your radar warns you when one is close.'};
-function pickMap(m){selMap=m;document.querySelectorAll('#maps .btn').forEach(x=>x.classList.toggle('on',x.dataset.m===m));$('note').textContent=TIPS[m]||defNote()}
+function pickMap(m){selMap=m;document.querySelectorAll('#maps .btn').forEach(x=>x.classList.toggle('on',x.dataset.m===m));$('note').textContent=TIPS[m]||'Online multiplayer is coming soon! For now, fight the bots and earn coins.'}
 document.querySelectorAll('#maps .btn').forEach(b=>b.onclick=()=>pickMap(b.dataset.m));
 document.querySelectorAll('#modes .btn').forEach(b=>b.onclick=()=>{
   if(b.classList.contains('off'))return;selMode=b.dataset.mode;document.querySelectorAll('#modes .btn').forEach(x=>x.classList.toggle('on',x===b));
   $('note').textContent=selMode==='priv'?'Friends can find "'+P.name+'" in FIND PLAYERS and join you.':selMode==='pub'?'Everyone on this map shares one public lobby.':'';
 });
-$('li').onclick=()=>doAuth('login');$('su').onclick=()=>doAuth('register');
-$('lo').onclick=()=>{wsSend({t:'logout',token:tok});tok='';try{localStorage.removeItem('bs3tok')}catch(e){}authed=false;if(nroom)leaveRoom();resetProfile();P.name='Player'+(Math.random()*900+100|0);setNet('Logged out.');refreshAcct()};
-$('pw').addEventListener('keydown',e=>{if(e.key==='Enter')doAuth('login');e.stopPropagation()});
+$('nm').value=P.name;$('sv').onclick=saveName;
 function renderStore(){
   const g=$('grid');g.innerHTML='';
   WL.forEach(w=>{
@@ -590,29 +577,33 @@ function renderProfile(){
     else if(ST.k>=RANKS[i-1][1]){const bar=el('div','bar');bar.style.width='120px';const f=el('i');f.style.width=Math.min(100,(ST.k-RANKS[i-1][1])/(k-RANKS[i-1][1])*100)+'%';bar.append(f);r.append(bar)}
     box.append(r)});
 }
-function search(){
-  const q=slug($('q').value);$('res').innerHTML='';
-  if(!authed){$('qmsg').textContent='Log in to search for players.';return}
+async function search(){
+  $('qmsg').textContent='Player search is coming soon!';return;
+  const q=slug($('q').value),box=$('res');box.innerHTML='';
   if(!q){$('qmsg').textContent='Type a username first.';return}
-  $('qmsg').textContent='Searching...';wsSend({t:'search',q});
-}
-function showResults(rows){
-  const box=$('res');box.innerHTML='';
-  $('qmsg').textContent=rows.length?rows.length+' player(s) found':'No players match that name.';
+  let rows=[];
+  if(db&&uid){
+    try{const s=await db.collection('players').get();rows=s.docs.map(d=>Object.assign({id:d.id},d.data())).filter(r=>r.id!==uid&&String(r.nl||'').includes(q));
+      rows.sort((a,b)=>(num(b.ts)-num(a.ts)));rows=rows.slice(0,10)}catch(e){$('qmsg').textContent='Search failed. Try again.'}
+  }
+  $('qmsg').textContent=rows.length?rows.length+' player(s) found':'No registered players match "'+q+'".';
   rows.forEach(r=>{
-    const row=document.createElement('div');row.className='pl';
-    const l=document.createElement('span'),d=document.createElement('span');d.className='dot'+(r.online?' o':'');
-    const t=document.createElement('span');t.textContent=(r.icon?r.icon+' ':'')+safe(r.name)+(r.online?(r.room?'  · in a lobby ('+safe(r.map,8)+')':'  · online'):'  · offline');l.append(d,t);
-    const b=document.createElement('button');b.className='btn'+(r.online?'':' off');b.textContent=r.online?'JOIN':'OFFLINE';
-    if(r.online)b.onclick=()=>{const m=MAPS[r.map]?r.map:'yard';const rn=okRoom(String(r.room))?r.room:'r-'+slug(r.name)+'-'+m;begin('join',{room:rn,map:m})};
+    const on=Date.now()-num(r.ts)<40000,row=document.createElement('div');row.className='pl';
+    const l=document.createElement('span'),d=document.createElement('span');d.className='dot'+(on?' o':'');
+    const t=document.createElement('span');t.textContent=safe(r.name)+(on?(r.room?'  · in a lobby ('+safe(r.map,8)+')':'  · online'):'  · offline');l.append(d,t);
+    const b=document.createElement('button');b.className='btn';b.textContent='JOIN';
+    b.onclick=()=>{const m=MAPS[r.map]?r.map:'yard';const rn=okRoom(String(r.room))?r.room:'r-'+slug(r.name)+'-'+m;begin('join',{room:rn,map:m})};
     row.append(l,b);box.append(row);
   });
+  // fallback: join by exact username even without the directory
+  if(room){const m=document.createElement('button');m.className='btn';m.textContent='JOIN "'+q+'" LOBBY ON '+selMap.toUpperCase();m.onclick=()=>begin('join',{room:'r-'+q+'-'+selMap,map:selMap});box.append(m)}
 }
 $('qs').onclick=search;$('q').addEventListener('keydown',e=>{if(e.key==='Enter')search();e.stopPropagation()});
 $('nm').addEventListener('keydown',e=>e.stopPropagation());
 async function begin(mode,target){
-  if((mode==='pub'||mode==='priv'||mode==='join')&&!authed){setNet('Log in first to play online.');showTab('play');return}
   try{renderer.domElement.requestPointerLock()}catch(e){}
+  const n=cleanName($('nm').value);
+  if(n.length>=3&&n!==P.reg){if(!(await saveName())){document.exitPointerLock();showTab('play');return}}
   let rname='';
   if(mode==='pub')rname='pub-'+selMap;else if(mode==='priv')rname='r-'+slug(P.name)+'-'+selMap;else if(mode==='join'){rname=target.room;pickMap(target.map)}
   const key=selMap+'|'+rname;
@@ -622,12 +613,12 @@ async function begin(mode,target){
     let ok=false;if(rname)ok=await joinRoom(rname);else await leaveRoom();
     curRoom=ok?rname:'';
     if(!ok){if(rname)feed('Lobby unavailable - playing solo');for(let i=0;i<8;i++)makeBot()}
-    sw(hotbar().some(w=>w.id===P.cur)?P.cur:'rifle');
+    sw(hotbar().some(w=>w.id===P.cur)?P.cur:'rifle');heartbeat();
   }
   updateHUD();
 }
 $('play').onclick=()=>begin(selMode);
-loadMap('yard');sw('rifle');renderStore();renderProfile();updateHUD();loop();refreshAcct();connect();
+loadMap('yard');sw('rifle');renderStore();renderProfile();updateHUD();loop();
 })();
 </script>
 </body>
