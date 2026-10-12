@@ -273,7 +273,8 @@ let room=null,db=null,uid=null,nroom=null,myPeer=null,lastAtk=null,curRoom='',un
 const slug=n=>String(n).toLowerCase().replace(/[^a-z0-9_]/g,'');
 const okRoom=r=>/^[a-z0-9][a-z0-9_.-]{0,47}$/.test(r)&&(r.startsWith('r-')||r.startsWith('pub-'));
 // ----- server connection (accounts + lobbies) -----
-const SERVER='wss://YOUR-SERVER.onrender.com'; // <-- PUT YOUR RENDER SERVER ADDRESS HERE (starts with wss://)
+const SERVER='wss://voxelcombat.vercel.app
+' // <-- PUT YOUR RENDER SERVER ADDRESS HERE (starts with wss://)
 const configured=!/YOUR-SERVER/.test(SERVER);
 let ws=null,wsOpen=false,myId=null,authed=false,tok='',peerCb=null,lastSnap=null,joinRes=null,joinRej=null,saveTimer=0;
 try{tok=localStorage.getItem('bs3tok')||''}catch(e){}
