@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>VOXEL COMBAT 3</title>
-<link rel="icon" type="image/png" href="favicon.png">
 <style>
 :root{--bg:#10131c;--fg:#fff;--ac:#ffd23f;box-sizing:border-box}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:Impact,'Arial Black',sans-serif;user-select:none}
@@ -77,6 +76,10 @@ body.touch #sc{font-size:13px;top:8px}body.touch #radar{top:30px;font-size:13px}
 #dinfo{font-family:Arial,sans-serif;opacity:.9;margin-bottom:18px;font-size:15px}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-14px)}40%{transform:translateX(12px)}60%{transform:translateX(-8px)}80%{transform:translateX(6px)}}
+#pause{position:fixed;inset:0;z-index:28;display:none;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(#0b1a3acc,#000000ee);text-align:center;padding:16px;animation:fadein .25s}
+#ptitle{font-size:clamp(46px,11vw,120px);color:var(--ac);letter-spacing:6px;text-shadow:0 0 24px #ffd23f88,6px 6px 0 #000}
+#psub{font-family:Arial,sans-serif;font-size:clamp(13px,2vw,17px);opacity:.85;margin:4px 0 14px;max-width:520px}
+#fireL{left:calc(30px + env(safe-area-inset-left,0px));bottom:196px;width:64px;height:64px;font-size:11px;background:#ff3b3b44;border-color:#ff6b6b}
 </style>
 </head>
 <body>
@@ -90,9 +93,12 @@ body.touch #sc{font-size:13px;top:8px}body.touch #radar{top:30px;font-size:13px}
   <div id="bar"></div>
 </div>
 <div id="touch"><div id="joy"><div id="knob"></div></div>
-  <div class="tb" id="fire" data-tb="fire">FIRE</div><div class="tb" id="jump" data-tb="jump">JUMP</div><div class="tb" id="aimb" data-tb="aim">AIM</div>
+  <div class="tb" id="fire" data-tb="fire">FIRE</div><div class="tb" id="fireL" data-tb="fire">FIRE</div><div class="tb" id="jump" data-tb="jump">JUMP</div><div class="tb" id="aimb" data-tb="aim">AIM</div>
   <div class="tb" id="rld" data-tb="reload">RELOAD</div><div class="tb" id="nxt" data-tb="next">SWAP</div>
   <div class="tb" id="mnu" data-tb="menu">☰</div><div class="tb" id="shp" data-tb="shop">🛒</div></div>
+<div id="pause"><div id="ptitle">GAME PAUSED</div><div id="psub">Why did you pause the game? Did your mom tell you to go get groceries?</div>
+  <label class="msg touch-only" style="margin:6px 0 12px">Look sensitivity <input class="sens" type="range" min=".4" max="2.5" step=".05" style="width:200px;vertical-align:middle;padding:0"></label>
+  <div class="row"><button class="btn go" id="pres">▶ RESUME</button><button class="btn" id="pshop">🛒 WEAPON STORE</button><button class="btn" id="pmenu">MAIN MENU</button></div></div>
 <div id="dead"><div id="dtitle">YOU DIED</div><div id="dsub">haha loser 😂</div><div id="dinfo"></div>
   <div class="row"><button class="btn go" id="dres">RESPAWN</button><button class="btn" id="dshop">🛒 WEAPON SHOP</button><button class="btn" id="dmenu">MAIN MENU</button></div></div>
 <div id="rot">↻ Turn your phone sideways to play</div>
@@ -118,8 +124,9 @@ body.touch #sc{font-size:13px;top:8px}body.touch #radar{top:30px;font-size:13px}
       <button class="btn off mpb" data-mode="priv">PRIVATE LOBBY · COMING SOON</button>
     </div>
     <div class="msg" id="note">Online multiplayer is coming soon! For now, fight the bots and earn coins.</div>
+    <label class="msg touch-only" style="margin:4px 0">Look sensitivity <input class="sens" type="range" min=".4" max="2.5" step=".05" style="width:200px;vertical-align:middle;padding:0"></label>
     
-    <p class="msg touch-only">📱 Left thumb: move (drag far to sprint). Right thumb: look around. Use the buttons to shoot, jump, aim, reload and swap weapons. ☰ = menu, 🛒 = store. Play sideways! Kills drop coins and ammo.</p>
+    <p class="msg touch-only">📱 Left thumb: move (drag far to sprint). Right thumb: look around, or hold FIRE and slide that same thumb to aim and shoot at once. Use the buttons to shoot, jump, aim, reload and swap weapons. ☰ = menu, 🛒 = store. Play sideways! Kills drop coins and ammo.</p>
     <p class="msg kb-only">💻 <b>WASD</b> move · <b>SHIFT</b> sprint · <b>SPACE</b> jump · <b>CLICK</b> shoot · <b>RIGHT-CLICK</b> aim · <b>R</b> reload · <b>1-9</b>/<b>Q</b>/<b>E</b>/wheel switch weapon · <b>B</b> store<br>Kills drop 🪙 coins and ammo boxes. Spend coins in the weapon store. Pads launch you skyward.</p>
   </div>
   <div class="tab" id="t-find">
@@ -304,6 +311,7 @@ const P={pos:new THREE.Vector3(0,0,8),vy:0,yaw:0,pitch:0,ground:true,hp:100,cur:
 function persist(){try{localStorage.setItem('bs3',JSON.stringify({coins:P.coins,owned:P.owned,name:P.name,reg:P.reg,icon:P.icon,title:P.title,st:ST}))}catch(e){}}
 const ST=Object.assign({k:0,d:0,m:0,hs:0,bs:0,lb:0},SAVE.st||{});
 P.icon=SAVE.icon||'🦊';P.rankTop=rankFor(ST.k);P.title=SAVE.title||P.rankTop;
+P.sens=1;try{P.sens=parseFloat(localStorage.getItem('bs3sens'))||1}catch(e){}
 function addKill(hd){
   P.kills++;P.streak++;ST.k++;if(hd)ST.hs++;ST.bs=Math.max(ST.bs,P.streak);
   const r=rankFor(ST.k);if(r!==P.rankTop){P.rankTop=r;P.title=r;feed('RANK UP! You are now '+r)}persist();
@@ -512,7 +520,7 @@ function fire(){
   }
   updateHUD();
 }
-function freezeInput(){soft=false;locked=false;mouseDown=false;aim=false;joy.x=joy.y=0;joy.run=false;document.querySelectorAll('.tb.on').forEach(x=>x.classList.remove('on'));for(const k in keys)keys[k]=false}
+function freezeInput(){soft=false;locked=false;mouseDown=false;aim=false;look.x=look.y=0;joy.x=joy.y=0;joy.run=false;document.querySelectorAll('.tb.on').forEach(x=>x.classList.remove('on'));for(const k in keys)keys[k]=false}
 function die(src){
   P.deaths++;ST.d++;persist();P.streak=0;P.hp=0;updateHUD();
   dead=true;freezeInput();try{document.exitPointerLock()}catch(e){}
@@ -542,7 +550,13 @@ function updateHUD(){
 }
 
 // ---------- Input ----------
-function softExit(){freezeInput();$('menu').style.display='flex';updateHUD();renderStore();renderProfile()}
+function pausedUI(){   // once a game has started, pausing shows the GAME PAUSED screen instead of the main menu
+  updateHUD();renderStore();renderProfile();
+  if(applied!==''&&!dead){$('pause').style.display='flex';$('menu').style.display='none'}else $('menu').style.display='flex';
+}
+function openStore(){freezeInput();$('pause').style.display='none';$('menu').style.display='flex';showTab('store');updateHUD();renderStore();renderProfile()}
+function softExit(){freezeInput();pausedUI()}
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&locked&&TOUCH)softExit()});
 addEventListener('keydown',e=>{
   if(e.code==='Escape'&&soft){softExit();return}
   keys[e.code]=true;if(e.code==='KeyR')startReload();
@@ -557,13 +571,32 @@ addEventListener('mouseup',e=>{if(e.button===0)mouseDown=false;if(e.button===2)a
 addEventListener('contextmenu',e=>e.preventDefault());
 addEventListener('wheel',e=>{if(!locked)return;const h=hotbar(),i=h.findIndex(x=>x.id===P.cur);sw(h[(i+(e.deltaY>0?1:h.length-1))%h.length].id)});
 addEventListener('mousemove',e=>{if(!locked)return;const s=0.0022*camera.fov/80;P.yaw-=e.movementX*s;P.pitch=Math.max(-1.5,Math.min(1.5,P.pitch-e.movementY*s))});
-document.addEventListener('pointerlockchange',()=>{const real=document.pointerLockElement===renderer.domElement;if(dead){locked=false;return}if(!real&&soft)return;locked=real;if(real)soft=false;$('menu').style.display=locked?'none':'flex';if(!locked){mouseDown=false;aim=false;for(const k in keys)keys[k]=false;updateHUD();renderStore();renderProfile()}});
+document.addEventListener('pointerlockchange',()=>{const real=document.pointerLockElement===renderer.domElement;if(dead){locked=false;return}if(!real&&soft)return;locked=real;if(real)soft=false;if(locked){$('menu').style.display='none';$('pause').style.display='none'}else{mouseDown=false;aim=false;for(const k in keys)keys[k]=false;pausedUI()}});
 
 // ---------- Loop ----------
 // ---------- Touch controls ----------
 const joy={x:0,y:0,run:false},TT={};let jid=null,jc={x:0,y:0},lastPl=null;
 const jb=$('joy'),jk=$('knob');
 function moveJoy(t){let dx=t.clientX-jc.x,dy=t.clientY-jc.y;const M=55,L=Math.hypot(dx,dy);joy.run=L>M*1.25;if(L>M){dx*=M/L;dy*=M/L}joy.x=dx/M;joy.y=dy/M;jk.style.transform='translate('+dx+'px,'+dy+'px)'}
+const look={x:0,y:0};
+function addLook(dx,dy){const m=Math.hypot(dx,dy),a=1+Math.min(.7,m*.025);look.x+=dx*a;look.y+=dy*a}   // faster flicks turn a bit further
+function applyLook(dt){   // look input is eased in over a few frames so turning feels smooth, not jittery
+  const k=1-Math.exp(-dt*30),ax=look.x*k,ay=look.y*k;look.x-=ax;look.y-=ay;
+  const sc=.0042*P.sens*camera.fov/80;P.yaw-=ax*sc;P.pitch=Math.max(-1.5,Math.min(1.5,P.pitch-ay*sc));
+}
+function aimAssist(dt){   // while shooting/aiming, gently pull the crosshair toward a bot that is already close to it
+  if(!(mouseDown||aim))return;
+  const eye=camera.position;let best=null,bd=1e9;
+  for(const b of bots){
+    if(!b.visible)continue;
+    const dx=b.position.x-eye.x,dy=b.position.y+1.1-eye.y,dz=b.position.z-eye.z,h=Math.hypot(dx,dz);
+    if(h>55||h<1)continue;
+    let ey=Math.atan2(-dx,-dz)-P.yaw;ey=Math.atan2(Math.sin(ey),Math.cos(ey));
+    const ep=Math.atan2(dy,h)-P.pitch,d=Math.hypot(ey,ep);
+    if(d<.09&&d<bd){bd=d;best={ey,ep,t:new THREE.Vector3(b.position.x,b.position.y+1.2,b.position.z)}}
+  }
+  if(best&&hasLOS(eye,best.t)){const k=Math.min(1,dt*5);P.yaw+=best.ey*k;P.pitch+=best.ep*k}
+}
 function tPress(n,down,el){
   if(n==='fire')mouseDown=down;
   else if(n==='jump')keys.Space=down;
@@ -572,7 +605,7 @@ function tPress(n,down,el){
     else if(n==='aim'){aim=!aim;el.classList.toggle('on',aim)}
     else if(n==='next'){const h=hotbar(),i=h.findIndex(x=>x.id===P.cur);sw(h[(i+1)%h.length].id)}
     else if(n==='menu')softExit();
-    else if(n==='shop'){softExit();showTab('store')}
+    else if(n==='shop')openStore();
   }
   if(n!=='aim')el.classList.toggle('on',down);
 }
@@ -580,7 +613,7 @@ function tStart(e){
   if(!TOUCH||!locked)return;
   for(const t of e.changedTouches){
     const el=document.elementFromPoint(t.clientX,t.clientY),b=el&&el.closest?el.closest('[data-tb]'):null;
-    if(b){TT[t.identifier]={r:'b',n:b.dataset.tb,el:b};tPress(b.dataset.tb,true,b)}
+    if(b){TT[t.identifier]={r:'b',n:b.dataset.tb,el:b,x:t.clientX,y:t.clientY};tPress(b.dataset.tb,true,b)}
     else if(t.clientX<innerWidth*.45&&jid===null){jid=t.identifier;jc={x:t.clientX,y:t.clientY};jb.style.left=(t.clientX-65)+'px';jb.style.top=(t.clientY-65)+'px';jb.style.bottom='auto';TT[t.identifier]={r:'j'};moveJoy(t)}
     else TT[t.identifier]={r:'l',x:t.clientX,y:t.clientY};
   }
@@ -590,7 +623,7 @@ function tMove(e){
   if(!TOUCH||!locked)return;
   for(const t of e.changedTouches){const i=TT[t.identifier];if(!i)continue;
     if(i.r==='j')moveJoy(t);
-    else if(i.r==='l'){const k=.0045*camera.fov/80;P.yaw-=(t.clientX-i.x)*k;P.pitch=Math.max(-1.5,Math.min(1.5,P.pitch-(t.clientY-i.y)*k));i.x=t.clientX;i.y=t.clientY}
+    else if(i.r==='l'||(i.r==='b'&&i.n==='fire')){addLook(t.clientX-i.x,t.clientY-i.y);i.x=t.clientX;i.y=t.clientY}   // dragging the FIRE button also aims
   }
   e.preventDefault();
 }
@@ -607,6 +640,7 @@ function tEnd(e){
 
 const clock=new THREE.Clock();let bob=0;
 function updatePlayer(dt){
+  if(TOUCH){applyLook(dt);aimAssist(dt)}
   const f=Math.max(-1,Math.min(1,(keys.KeyW?1:0)-(keys.KeyS?1:0)-joy.y)),r=Math.max(-1,Math.min(1,(keys.KeyD?1:0)-(keys.KeyA?1:0)+joy.x)),w=WD[P.cur];
   const sp=((keys.ShiftLeft||joy.run)&&!aim?10:6.5)*(aim?.6:1);let vx=0,vz=0;
   if(f||r){const l=Math.hypot(f,r),mag=Math.min(1,l),sn=Math.sin(P.yaw),cs=Math.cos(P.yaw);vx=(-sn*f+cs*r)/l*sp*mag;vz=(-cs*f-sn*r)/l*sp*mag;bob+=dt*sp*1.4}
@@ -829,6 +863,7 @@ async function begin(mode,target){
   updateHUD();
 }
 $('play').onclick=()=>{
+  $('pause').style.display='none';
   if(TOUCH){
     begin(selMode);
     try{const de=document.documentElement;de.requestFullscreen&&de.requestFullscreen().then(()=>{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{})}).catch(()=>{})}catch(e){}
@@ -841,6 +876,10 @@ $('play').onclick=()=>{
 $('dres').onclick=()=>{respawnNow();resumeInput()};
 $('dshop').onclick=()=>{respawnNow();$('menu').style.display='flex';showTab('store');renderStore()};
 $('dmenu').onclick=()=>{respawnNow();applied='';$('menu').style.display='flex';showTab('play')};
+$('pres').onclick=()=>{$('pause').style.display='none';resumeInput()};
+$('pshop').onclick=openStore;
+$('pmenu').onclick=()=>{$('pause').style.display='none';applied='';$('menu').style.display='flex';showTab('play')};
+document.querySelectorAll('.sens').forEach(el=>{el.value=P.sens;el.oninput=()=>{P.sens=+el.value;document.querySelectorAll('.sens').forEach(x=>x.value=P.sens);try{localStorage.setItem('bs3sens',P.sens)}catch(e){}}});
 loadMap('yard');sw('rifle');renderStore();renderProfile();updateHUD();loop();
 })();
 </script>
