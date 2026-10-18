@@ -97,7 +97,7 @@ body.touch #sc{font-size:13px;top:8px}body.touch #radar{top:30px;font-size:13px}
   <div class="tb" id="fire" data-tb="fire">FIRE</div><div class="tb" id="fireL" data-tb="fire">FIRE</div><div class="tb" id="jump" data-tb="jump">JUMP</div><div class="tb" id="aimb" data-tb="aim">AIM</div>
   <div class="tb" id="rld" data-tb="reload">RELOAD</div><div class="tb" id="nxt" data-tb="next">SWAP</div>
   <div class="tb" id="mnu" data-tb="menu">☰</div><div class="tb" id="shp" data-tb="shop">🛒</div></div>
-<div id="pause"><div id="ptitle">GAME PAUSED</div><div id="psub">Why did you pause the game? Did your mom tell you to go get groceries?</div>
+<div id="pause"><div id="ptitle">GAME PAUSED</div><div id="pcode" style="font-size:22px;margin:2px 0 6px;color:#4ade80"></div><div id="psub">Why did you pause the game? Did your mom tell you to go get groceries?</div>
   <label class="msg touch-only" style="margin:6px 0 12px">Look sensitivity <input class="sens" type="range" min=".4" max="2.5" step=".05" style="width:200px;vertical-align:middle;padding:0"></label>
   <div class="row"><button class="btn go" id="pres">▶ RESUME</button><button class="btn" id="pshop">🛒 WEAPON STORE</button><button class="btn" id="pmenu">MAIN MENU</button></div></div>
 <div id="dead"><div id="dtitle">YOU DIED</div><div id="dsub">haha loser 😂</div><div id="dinfo"></div>
@@ -108,7 +108,7 @@ body.touch #sc{font-size:13px;top:8px}body.touch #radar{top:30px;font-size:13px}
   <div class="row"><input id="nm" maxlength="14" placeholder="Username"><button class="btn" id="sv">SET NAME</button><span id="badge" style="font-size:18px"></span><span style="font-size:20px">🪙 <b id="mc">0</b></span></div>
   <div class="msg" id="nmsg"></div>
   <div id="boot" class="msg" style="color:#ff6b6b"></div>
-  <div class="row" id="tabs"><button class="btn on" data-t="play">PLAY</button><button class="btn" data-t="find">FIND PLAYERS · SOON</button><button class="btn" data-t="profile">PROFILE</button><button class="btn" data-t="store">WEAPON STORE</button></div>
+  <div class="row" id="tabs"><button class="btn on" data-t="play">PLAY</button><button class="btn" data-t="mp">🌐 MULTIPLAYER</button><button class="btn" data-t="profile">PROFILE</button><button class="btn" data-t="store">WEAPON STORE</button></div>
   <div class="tab on" id="t-play">
     <div class="row" id="maps">
       <button class="btn map on" data-m="yard"><i style="background:linear-gradient(#8fd3ff,#7ccf7a)"></i>CRATE YARD</button>
@@ -118,22 +118,30 @@ body.touch #sc{font-size:13px;top:8px}body.touch #radar{top:30px;font-size:13px}
       <button class="btn map" data-m="desert"><i style="background:linear-gradient(#f3d9a4,#c98b4f)"></i>DESERT RUINS</button>
       <button class="btn map" data-m="factory"><i style="background:linear-gradient(#1f2937,#facc15)"></i>FACTORY</button>
     </div>
-    <div class="msg" style="color:#ffd23f;font-size:15px">🌐 ONLINE MULTIPLAYER · COMING SOON</div>
+    <div class="msg" style="color:#ffd23f;font-size:15px">🌐 Want to play with friends? Open the MULTIPLAYER tab.</div>
     <div class="row" id="modes">
       <button class="btn on" data-mode="solo">SOLO vs BOTS</button>
-      <button class="btn off mpb" data-mode="pub">PUBLIC LOBBY · COMING SOON</button>
-      <button class="btn off mpb" data-mode="priv">PRIVATE LOBBY · COMING SOON</button>
-    </div>
-    <div class="msg" id="note">Online multiplayer is coming soon! For now, fight the bots and earn coins.</div>
+                </div>
+    <div class="msg" id="note">Solo mode: fight the bots and earn coins. Open the MULTIPLAYER tab to play with friends.</div>
     <label class="msg touch-only" style="margin:4px 0">Look sensitivity <input class="sens" type="range" min=".4" max="2.5" step=".05" style="width:200px;vertical-align:middle;padding:0"></label>
     
     <p class="msg touch-only">📱 Left thumb: move (drag far to sprint). Right thumb: look around, or hold FIRE and slide that same thumb to aim and shoot at once. Use the buttons to shoot, jump, aim, reload and swap weapons. ☰ = menu, 🛒 = store. Play sideways! Kills drop coins and ammo.</p>
     <p class="msg kb-only">💻 <b>WASD</b> move · <b>SHIFT</b> sprint · <b>SPACE</b> jump · <b>CLICK</b> shoot · <b>RIGHT-CLICK</b> aim · <b>R</b> reload · <b>1-9</b>/<b>Q</b>/<b>E</b>/wheel switch weapon · <b>B</b> store<br>Kills drop 🪙 coins and ammo boxes. Spend coins in the weapon store. Pads launch you skyward.</p>
   </div>
-  <div class="tab" id="t-find">
-    <div class="row"><input id="q" placeholder="Search username"><button class="btn" id="qs">SEARCH</button></div>
-    <div class="msg" id="qmsg">Multiplayer and player search are coming soon!</div>
-    <div id="res" style="width:100%"></div>
+  <div class="tab" id="t-mp">
+    <div class="msg" id="mpwho"></div>
+    <div class="row"><button class="btn on" id="mpb-pub">🌍 PUBLIC LOBBY</button><button class="btn" id="mpb-prv">🔒 PRIVATE LOBBY</button></div>
+    <div id="mp-pub" style="width:100%">
+      <div class="row"><button class="btn go" id="mp-cpub" style="font-size:20px;padding:6px 20px">➕ CREATE YOUR LOBBY</button><button class="btn" id="mp-ref">⟳ REFRESH</button></div>
+      <div class="msg" id="mp-pmsg"></div>
+      <div id="mp-list" style="width:100%"></div>
+    </div>
+    <div id="mp-prv" style="width:100%;display:none">
+      <div class="row"><button class="btn go" id="mp-cprv" style="font-size:20px;padding:6px 20px">➕ CREATE YOUR LOBBY</button></div>
+      <div class="msg">Your friends type your lobby code to join you. Or type a friend's code here:</div>
+      <div class="row"><input id="mp-code" maxlength="6" placeholder="LOBBY CODE" style="text-transform:uppercase;letter-spacing:4px"><button class="btn" id="mp-join">JOIN</button></div>
+    </div>
+    <div class="msg" id="mpmsg"></div>
   </div>
   <div class="tab" id="t-profile"><div id="prof" style="width:100%"></div></div>
   <div class="tab" id="t-store"><div class="msg" id="smsg">Earn coins by killing bots and players, then buy weapons here.</div><div class="grid" id="grid"></div></div>
@@ -146,6 +154,8 @@ addEventListener('unhandledrejection',function(e){var b=document.getElementById(
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>window.THREE||document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"><\/script>')</script>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>window.Peer||document.write('<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"><\/script>')</script>
 <script>
 (function(){
 const $=id=>document.getElementById(id);
@@ -383,39 +393,13 @@ function collect(d){
 }
 
 // ---------- Multiplayer: usernames, lobbies (room + db) ----------
-let room=null,db=null,uid=null,nroom=null,myPeer=null,lastAtk=null,curRoom='',unsubs=[];const avatars=new Map();
-const slug=n=>String(n).toLowerCase().replace(/[^a-z0-9_]/g,'');
+let room=null,nroom=null,myPeer=null,lastAtk=null,curRoom='',unsubs=[];const avatars=new Map();
 const okRoom=r=>/^[a-z0-9][a-z0-9_.-]{0,47}$/.test(r)&&(r.startsWith('r-')||r.startsWith('pub-'));
-(async()=>{
-  const bad=()=>{document.querySelectorAll('.mpb').forEach(b=>b.title='Multiplayer needs a signed-in claude.ai view');$('note').textContent='Multiplayer lobbies are unavailable in this view. Open the link while signed in to claude.ai.'};
-  return; /* multiplayer coming soon */
-  try{room=await claude.use('room')}catch(e){}
-  try{const u=await claude.use('user');uid=u?await u.id():null}catch(e){}
-  try{db=await claude.use('db')}catch(e){}
-  if(room)document.querySelectorAll('.mpb').forEach(b=>b.classList.remove('off'));else bad();
-  if(!(db&&uid))$('qmsg').textContent='Player search is unavailable here. You can still join a friend by typing their exact username and pressing SEARCH.';
-  heartbeat();
-})();
-async function heartbeat(){
-  if(!(db&&uid&&P.reg))return;
-  try{await db.doc('players/'+uid).set({name:P.reg,nl:P.reg.toLowerCase(),ts:Date.now(),room:curRoom,map:selMap})}catch(e){}
-}
-setInterval(heartbeat,15000);
-async function register(name){
-  if(!(db&&uid)){P.reg=name;persist();return true}
-  try{
-    const snap=await db.collection('players').get();
-    if(snap.docs.some(d=>d.id!==uid&&String(d.data().nl)===name.toLowerCase()))return false;
-    P.reg=name;await heartbeat();persist();return true;
-  }catch(e){P.reg=name;persist();return true}
-}
 function cleanName(v){return v.replace(/[^A-Za-z0-9_]/g,'').slice(0,14)}
 async function saveName(){
   const n=cleanName($('nm').value);
-  if(n.length<3){$('nmsg').textContent='Username must be 3-14 letters, numbers or _';return false}
-  const ok=await register(n);
-  if(!ok){$('nmsg').textContent='"'+n+'" is already taken. Pick another.';return false}
-  P.name=n;$('nm').value=n;persist();$('nmsg').textContent='Username saved: '+n+(db&&uid?' (friends can find you)':'');return true;
+  if(n.length<3){$('nmsg').textContent='Name must be 3-14 letters, numbers or _';return false}
+  P.name=n;P.reg=n;$('nm').value=n;persist();$('nmsg').textContent='Name saved: '+n;return true;
 }
 async function leaveRoom(){
   unsubs.forEach(u=>{try{u()}catch(e){}});unsubs=[];
@@ -437,8 +421,8 @@ function handlePeers(ch){
       a.hs=(Array.isArray(pr.h)?pr.h:[]).reduce((m,e)=>Math.max(m,num(e&&e[0])),0);
       a.fxs=Array.isArray(pr.fx)?pr.fx[0]:0;a.ks=num(pr.ks);a.g.position.set(num(pr.x),num(pr.y),num(pr.z));
     }
-    const nm=safe(pr.name)||'Player';
-    if(nm!==a.name){if(a.tg)a.g.remove(a.tg);a.name=nm;a.tg=tag(nm);a.g.add(a.tg)}
+    const nm=safe(pr.name)||'Player',ic=safe(pr.icon,4);
+    if(nm!==a.name||ic!==a.ic){if(a.tg)a.g.remove(a.tg);a.name=nm;a.ic=ic;a.tg=tag((ic?ic+' ':'')+nm);a.g.add(a.tg)}
     a.tx=num(pr.x);a.ty=num(pr.y);a.tz=num(pr.z);a.yaw=num(pr.yaw);a.hp=pr.hp===undefined?100:num(pr.hp);a.k=num(pr.k);
     // hits aimed at me (carried in the shooter's presence, so any viewer can play)
     if(Array.isArray(pr.h)){let mx=a.hs;for(const e of pr.h){if(!Array.isArray(e))continue;const s=num(e[0]);if(s>a.hs){if(e[1]===myPeer){lastAtk=p.peer;damage(Math.min(250,Math.max(0,num(e[2]))))}mx=Math.max(mx,s)}}a.hs=mx}
@@ -455,13 +439,169 @@ async function joinRoom(name){
 }
 function sendPresence(){
   if(!nroom)return;
-  const p={x:+P.pos.x.toFixed(2),y:+P.pos.y.toFixed(2),z:+P.pos.z.toFixed(2),yaw:+P.yaw.toFixed(2),hp:P.hp|0,name:P.name,hue:+P.hue.toFixed(3),k:P.kills,ks:P.ks,kb:P.kb,h:P.hq};
+  const p={x:+P.pos.x.toFixed(2),y:+P.pos.y.toFixed(2),z:+P.pos.z.toFixed(2),yaw:+P.yaw.toFixed(2),hp:P.hp|0,name:P.name,icon:P.icon,title:P.title,hue:+P.hue.toFixed(3),k:P.kills,ks:P.ks,kb:P.kb,h:P.hq};
   if(P.fx)p.fx=P.fx;nroom.presence(p).catch(()=>{});
 }
 setInterval(sendPresence,80);
+
+// ----- peer-to-peer lobbies (PeerJS). One player is the host: their browser relays everyone's state. -----
+const MAX_PLAYERS=6,PUB_SLOTS=24,PFX='voxelcombat3-',CODE_CHARS='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const MAPNAME={yard:'Crate Yard',neon:'Neon Rooftops',frost:'Frost Fortress',lunar:'Lunar Base',desert:'Desert Ruins',factory:'Factory'};
+let peer=null,hostMode=false,hostConn=null,peerCb=null,lastSnap=null,lobbyKind='',lobbyLabel='',mpGen=0;
+const hostConns=new Map(),hostPlayers=new Map();
+const mpMsg=t=>{$('mpmsg').textContent=t};
+const hasPeerJS=()=>typeof Peer!=='undefined';
+const closeLater=c=>setTimeout(()=>{try{c.close()}catch(e){}},400);
+function netStop(){
+  hostConns.forEach(c=>{try{c.close()}catch(e){}});hostConns.clear();hostPlayers.clear();
+  const hc=hostConn;hostConn=null;if(hc){try{hc.close()}catch(e){}}
+  const pr=peer;peer=null;if(pr){try{pr.destroy()}catch(e){}}
+  hostMode=false;peerCb=null;lastSnap=null;lobbyKind='';lobbyLabel='';
+}
+addEventListener('beforeunload',()=>{try{netStop()}catch(e){}});
+function snapToCh(m){return{peers:m.peers.map(q=>({peer:q.id,sameTab:q.id===m.id,presence:q.pr||{}})),left:[]}}
+// host side: take a player's state and pass it to everyone else
+function ingest(id,pr){
+  if(!pr||typeof pr!=='object'||JSON.stringify(pr).length>1500)return;
+  hostPlayers.set(id,pr);
+  hostConns.forEach((c,cid)=>{if(cid!==id&&c.open)c.send({t:'u',id,pr})});
+  if(id!=='h0'&&peerCb)peerCb({peers:[{peer:id,sameTab:false,presence:pr}],left:[]});
+}
+function hostLeft(id){
+  hostConns.delete(id);hostPlayers.delete(id);
+  hostConns.forEach(c=>{if(c.open)c.send({t:'left',id})});
+  if(peerCb)peerCb({peers:[],left:[{peer:id}]});
+}
+function onHostConn(conn){
+  let id=null;
+  conn.on('data',m=>{
+    if(!m||typeof m!=='object')return;
+    if(m.t==='info'){conn.send({t:'info',name:P.name,icon:P.icon,map:selMap,n:hostConns.size+1,max:MAX_PLAYERS});closeLater(conn);return}
+    if(m.t==='hello'&&!id){
+      if(hostConns.size+1>=MAX_PLAYERS){conn.send({t:'full'});closeLater(conn);return}
+      for(let i=1;i<MAX_PLAYERS&&!id;i++)if(!hostConns.has('p'+i))id='p'+i;
+      hostConns.set(id,conn);
+      const peers=[{id:'h0',pr:hostPlayers.get('h0')||{}}];hostConns.forEach((c,cid)=>{if(cid!==id)peers.push({id:cid,pr:hostPlayers.get(cid)||{}})});
+      conn.send({t:'welcome',id,map:selMap,peers});return;
+    }
+    if(m.t==='pres'&&id)ingest(id,m.p);
+  });
+  conn.on('close',()=>{if(id)hostLeft(id)});
+  conn.on('error',()=>{if(id)hostLeft(id)});
+}
+function startHost(kind){   // kind 'pub' (one of 24 shared public slots) or 'prv' (random 5-letter code)
+  return new Promise((resolve,reject)=>{
+    if(!hasPeerJS())return reject(new Error('The multiplayer library could not load. Check your connection and refresh the page.'));
+    netStop();
+    const slots=[];for(let i=1;i<=PUB_SLOTS;i++)slots.push(i);
+    for(let i=slots.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[slots[i],slots[j]]=[slots[j],slots[i]]}
+    let tries=0;
+    const attempt=()=>{
+      if(tries>=(kind==='pub'?PUB_SLOTS:8))return reject(new Error(kind==='pub'?'All public lobby slots are taken right now. Try again in a minute.':'Could not create a lobby. Try again.'));
+      const code=kind==='pub'?String(slots[tries]):Array.from({length:5},()=>CODE_CHARS[Math.random()*CODE_CHARS.length|0]).join('');
+      tries++;
+      const pr=new Peer(PFX+kind+'-'+code,{debug:0});let settled=false;
+      const timer=setTimeout(()=>{if(settled)return;settled=true;try{pr.destroy()}catch(e){}reject(new Error('The multiplayer service did not answer. Try again.'))},10000);
+      pr.on('open',()=>{
+        settled=true;clearTimeout(timer);peer=pr;hostMode=true;lobbyKind=kind;hostPlayers.set('h0',{});
+        pr.on('connection',onHostConn);pr.on('error',()=>{});pr.on('disconnected',()=>{try{pr.reconnect()}catch(e){}});
+        resolve({code});
+      });
+      pr.on('error',e=>{
+        if(settled)return;settled=true;clearTimeout(timer);try{pr.destroy()}catch(x){}
+        if(e&&e.type==='unavailable-id')attempt();else reject(new Error('Connection problem ('+(e&&e.type||'unknown')+'). Try again.'));
+      });
+    };
+    attempt();
+  });
+}
+function joinLobby(targetId){
+  return new Promise((resolve,reject)=>{
+    if(!hasPeerJS())return reject(new Error('The multiplayer library could not load. Check your connection and refresh the page.'));
+    netStop();
+    const pr=peer=new Peer(undefined,{debug:0});let done=false;
+    const fail=m=>{if(done)return;done=true;clearTimeout(timer);try{pr.destroy()}catch(e){}if(peer===pr)peer=null;reject(new Error(m))};
+    const timer=setTimeout(()=>fail('Could not connect to that lobby (timed out). Some networks block direct connections.'),12000);
+    pr.on('error',e=>fail(e&&e.type==='peer-unavailable'?'Lobby not found. Check the code, or refresh the list.':'Connection problem ('+(e&&e.type||'unknown')+'). Try again.'));
+    pr.on('open',()=>{
+      const c=pr.connect(targetId,{reliable:true,serialization:'json'});
+      c.on('open',()=>c.send({t:'hello'}));
+      c.on('data',m=>{
+        if(!m||typeof m!=='object')return;
+        if(m.t==='full')return fail('That lobby is full.');
+        if(m.t==='welcome'&&!done){done=true;clearTimeout(timer);hostConn=c;lastSnap={id:m.id,peers:[...m.peers,{id:m.id,pr:{}}]};resolve({map:m.map});return}
+        if(!peerCb)return;
+        if(m.t==='u')peerCb({peers:[{peer:m.id,sameTab:false,presence:m.pr||{}}],left:[]});
+        else if(m.t==='left')peerCb({peers:[],left:[{peer:m.id}]});
+      });
+      c.on('close',()=>{if(done&&hostConn===c)onHostGone();else fail('The lobby closed the connection.')});
+    });
+  });
+}
+function onHostGone(){
+  hostConn=null;netStop();leaveRoom();
+  freezeInput();try{document.exitPointerLock()}catch(e){}
+  dead=false;$('dead').style.display='none';$('pause').style.display='none';applied='';
+  $('menu').style.display='flex';showTab('mp');mpMsg('The host left the lobby, so the match ended.');
+}
+// the same small interface the game already uses for lobbies
+const nroomShim={
+  onPeers(cb){peerCb=cb;if(lastSnap){cb(snapToCh(lastSnap));lastSnap=null}return()=>{peerCb=null}},
+  presence(p){if(hostMode)ingest('h0',p);else if(hostConn&&hostConn.open)hostConn.send({t:'pres',p});return Promise.resolve()},
+  leave(){netStop();return Promise.resolve()}
+};
+room={join(){return Promise.resolve(nroomShim)}};
+function enterGame(){
+  if(TOUCH){soft=true;locked=true;$('menu').style.display='none';return}
+  try{renderer.domElement.requestPointerLock()}catch(e){}
+  setTimeout(()=>{if(!locked&&!document.pointerLockElement&&$('menu').style.display!=='none'){soft=true;locked=true;$('menu').style.display='none';feed('Mouse capture is not available here: move the mouse to look, click to shoot. Press Esc for the menu.')}},900);
+}
+async function mpStart(kind,arg){   // 'pub-host' | 'prv-host' | 'join'
+  const n=cleanName($('nm').value);if(n.length>=3&&n!==P.reg)await saveName();
+  mpMsg(kind==='join'?'Connecting...':'Creating your lobby...');
+  let map=selMap,rn,label;
+  try{
+    if(kind==='join'){const r=await joinLobby(arg.id);map=MAPS[r.map]?r.map:'yard';rn=(arg.kind==='prv'?'r-':'pub-')+(++mpGen);label=arg.kind==='prv'?'Lobby code: '+arg.code:'Public lobby'}
+    else{const r=await startHost(kind==='pub-host'?'pub':'prv');rn=(kind==='prv-host'?'r-':'pub-')+(++mpGen);label=kind==='prv-host'?'Lobby code: '+r.code:'Public lobby';lastSnap={id:'h0',peers:[{id:'h0',pr:{}}]}}
+  }catch(e){netStop();mpMsg(e.message);return}
+  lobbyLabel=label;mpMsg('');$('pause').style.display='none';
+  await begin('join',{room:rn,map});enterGame();
+  feed(kind==='prv-host'?label+'  (tell your friends!)':label);
+}
+async function refreshPublic(){
+  const box=$('mp-list'),msg=$('mp-pmsg');box.innerHTML='';msg.textContent='Looking for lobbies around the world...';
+  const rows=await listPublic();
+  if(rows===null){msg.textContent='The multiplayer library could not load. Check your connection and refresh the page.';return}
+  rows.sort((a,b)=>a.slot-b.slot);
+  msg.textContent=rows.length?rows.length+' public lobby(s) open':'No public lobbies right now. Be the first: press CREATE YOUR LOBBY!';
+  rows.forEach(r=>{
+    const row=document.createElement('div');row.className='pl';
+    const t=document.createElement('span');t.textContent=(r.icon?r.icon+' ':'')+r.name+"'s lobby  ·  "+(MAPNAME[r.map]||r.map)+'  ·  '+r.n+'/'+r.max+' players';
+    const b=document.createElement('button');b.className='btn'+(r.n>=r.max?' off':'');b.textContent=r.n>=r.max?'FULL':'JOIN';
+    if(r.n<r.max)b.onclick=()=>mpStart('join',{id:PFX+'pub-'+r.slot,kind:'pub'});
+    row.append(t,b);box.append(row);
+  });
+}
+function listPublic(){   // ask each of the 24 public slots whether a host is there
+  return new Promise(resolve=>{
+    if(!hasPeerJS())return resolve(null);
+    const found=[];let pending=PUB_SLOTS,over=false;
+    const pr=new Peer(undefined,{debug:0});
+    const done=()=>{if(over)return;over=true;clearTimeout(timer);try{pr.destroy()}catch(e){}resolve(found)};
+    const timer=setTimeout(done,7000);
+    pr.on('error',e=>{if(e&&e.type==='peer-unavailable'){if(--pending<=0)done()}else done()});
+    pr.on('open',()=>{
+      for(let i=1;i<=PUB_SLOTS;i++){
+        const c=pr.connect(PFX+'pub-'+i,{reliable:true,serialization:'json'});
+        c.on('open',()=>c.send({t:'info'}));
+        c.on('data',m=>{if(m&&m.t==='info'){found.push({slot:i,name:safe(m.name),icon:safe(m.icon,4),map:safe(m.map,12),n:num(m.n),max:num(m.max)||MAX_PLAYERS});if(--pending<=0)done()}});
+      }
+    });
+  });
+}
 setInterval(()=>{
   if(!nroom)return;const rows=[{n:P.name,k:P.kills,me:1}];avatars.forEach(a=>rows.push({n:a.name,k:a.k|0}));rows.sort((a,b)=>b.k-a.k);
-  $('sb').innerHTML='';const t=document.createElement('div');t.style.opacity='.7';t.textContent=curRoom;$('sb').append(t);
+  $('sb').innerHTML='';const t=document.createElement('div');t.style.opacity='.7';t.textContent=lobbyLabel||curRoom;$('sb').append(t);
   rows.slice(0,8).forEach(r=>{const d=document.createElement('div');if(r.me)d.className='me';const a=document.createElement('span'),b=document.createElement('span');a.textContent=r.n;b.textContent=r.k;d.append(a,b);$('sb').append(d)});
 },500);
 
@@ -523,14 +663,15 @@ function fire(){
 }
 function freezeInput(){soft=false;locked=false;mouseDown=false;aim=false;look.x=look.y=0;joy.x=joy.y=0;joy.run=false;document.querySelectorAll('.tb.on').forEach(x=>x.classList.remove('on'));for(const k in keys)keys[k]=false}
 function die(src){
-  P.deaths++;ST.d++;persist();P.streak=0;P.hp=0;updateHUD();
+  const killer=avatars.get(lastAtk);P.ks++;P.kb=lastAtk||'';lastAtk=null;   // other players see who got the kill
+  P.deaths++;ST.d++;persist();P.streak=0;P.hp=0;updateHUD();sendPresence();
   dead=true;freezeInput();try{document.exitPointerLock()}catch(e){}
-  $('dinfo').textContent='Killed by '+({sniper:'a Sniper',rusher:'a Rusher'}[src]||'a Bot')+'  ·  Kills this match: '+P.kills+'  ·  K/D '+(ST.d?(ST.k/ST.d).toFixed(2):ST.k.toFixed(2));
+  $('dinfo').textContent='Killed by '+(killer?killer.name:({sniper:'a Sniper',rusher:'a Rusher'}[src]||'a Bot'))+'  ·  Kills this match: '+P.kills+'  ·  K/D '+(ST.d?(ST.k/ST.d).toFixed(2):ST.k.toFixed(2));
   $('dead').style.display='flex';
 }
 function respawnNow(){
   P.hp=100;refill();P.reload=0;P.prot=2;P.bq=0;$('wn').textContent='';
-  const s=spawnPoint(bots.filter(b=>b.visible).map(b=>b.position));P.pos.set(s.x,0,s.z);P.vy=0;
+  const s=spawnPoint([...bots.filter(b=>b.visible).map(b=>b.position),...[...avatars.values()].map(a=>a.g.position)]);P.pos.set(s.x,0,s.z);P.vy=0;
   dead=false;$('dead').style.display='none';updateHUD();
 }
 function resumeInput(){
@@ -551,7 +692,8 @@ function updateHUD(){
 }
 
 // ---------- Input ----------
-function pausedUI(){   // once a game has started, pausing shows the GAME PAUSED screen instead of the main menu
+function pausedUI(){
+  $('pcode').textContent=nroom&&lobbyLabel?'🌐 '+lobbyLabel:'';   // once a game has started, pausing shows the GAME PAUSED screen instead of the main menu
   updateHUD();renderStore();renderProfile();
   if(applied!==''&&!dead){$('pause').style.display='flex';$('menu').style.display='none'}else $('menu').style.display='flex';
 }
@@ -782,14 +924,10 @@ function loop(){
 // ---------- Menu ----------
 let selMap='yard',selMode='solo',applied='';
 function showTab(t){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.id==='t-'+t));document.querySelectorAll('#tabs .btn').forEach(x=>x.classList.toggle('on',x.dataset.t===t))}
-document.querySelectorAll('#tabs .btn').forEach(b=>b.onclick=()=>{showTab(b.dataset.t);if(b.dataset.t==='store')renderStore();if(b.dataset.t==='profile')renderProfile()});
+document.querySelectorAll('#tabs .btn').forEach(b=>b.onclick=()=>{showTab(b.dataset.t);if(b.dataset.t==='store')renderStore();if(b.dataset.t==='profile')renderProfile();if(b.dataset.t==='mp')mpOpen()});
 const TIPS={lunar:'🌙 Low gravity: jump high and use the big pads to reach the rooftops!',desert:'🏜️ 8 hidden loot boxes: behind ruins, beside rocks, atop the mesas. Your radar warns you when one is close.',factory:'🏭 Conveyor belts carry you along, cranes swing overhead and side rooms flank the main hall. Use the yellow pads to reach the catwalks!'};
-function pickMap(m){selMap=m;document.querySelectorAll('#maps .btn').forEach(x=>x.classList.toggle('on',x.dataset.m===m));$('note').textContent=TIPS[m]||'Online multiplayer is coming soon! For now, fight the bots and earn coins.'}
+function pickMap(m){selMap=m;document.querySelectorAll('#maps .btn').forEach(x=>x.classList.toggle('on',x.dataset.m===m));$('note').textContent=TIPS[m]||'Solo mode: fight the bots and earn coins. Open the MULTIPLAYER tab to play with friends.'}
 document.querySelectorAll('#maps .btn').forEach(b=>b.onclick=()=>pickMap(b.dataset.m));
-document.querySelectorAll('#modes .btn').forEach(b=>b.onclick=()=>{
-  if(b.classList.contains('off'))return;selMode=b.dataset.mode;document.querySelectorAll('#modes .btn').forEach(x=>x.classList.toggle('on',x===b));
-  $('note').textContent=selMode==='priv'?'Friends can find "'+P.name+'" in FIND PLAYERS and join you.':selMode==='pub'?'Everyone on this map shares one public lobby.':'';
-});
 $('nm').value=P.name;$('sv').onclick=saveName;
 function renderStore(){
   const g=$('grid');g.innerHTML='';
@@ -823,35 +961,23 @@ function renderProfile(){
     else if(ST.k>=RANKS[i-1][1]){const bar=el('div','bar');bar.style.width='120px';const f=el('i');f.style.width=Math.min(100,(ST.k-RANKS[i-1][1])/(k-RANKS[i-1][1])*100)+'%';bar.append(f);r.append(bar)}
     box.append(r)});
 }
-async function search(){
-  $('qmsg').textContent='Player search is coming soon!';return;
-  const q=slug($('q').value),box=$('res');box.innerHTML='';
-  if(!q){$('qmsg').textContent='Type a username first.';return}
-  let rows=[];
-  if(db&&uid){
-    try{const s=await db.collection('players').get();rows=s.docs.map(d=>Object.assign({id:d.id},d.data())).filter(r=>r.id!==uid&&String(r.nl||'').includes(q));
-      rows.sort((a,b)=>(num(b.ts)-num(a.ts)));rows=rows.slice(0,10)}catch(e){$('qmsg').textContent='Search failed. Try again.'}
-  }
-  $('qmsg').textContent=rows.length?rows.length+' player(s) found':'No registered players match "'+q+'".';
-  rows.forEach(r=>{
-    const on=Date.now()-num(r.ts)<40000,row=document.createElement('div');row.className='pl';
-    const l=document.createElement('span'),d=document.createElement('span');d.className='dot'+(on?' o':'');
-    const t=document.createElement('span');t.textContent=safe(r.name)+(on?(r.room?'  · in a lobby ('+safe(r.map,8)+')':'  · online'):'  · offline');l.append(d,t);
-    const b=document.createElement('button');b.className='btn';b.textContent='JOIN';
-    b.onclick=()=>{const m=MAPS[r.map]?r.map:'yard';const rn=okRoom(String(r.room))?r.room:'r-'+slug(r.name)+'-'+m;begin('join',{room:rn,map:m})};
-    row.append(l,b);box.append(row);
-  });
-  // fallback: join by exact username even without the directory
-  if(room){const m=document.createElement('button');m.className='btn';m.textContent='JOIN "'+q+'" LOBBY ON '+selMap.toUpperCase();m.onclick=()=>begin('join',{room:'r-'+q+'-'+selMap,map:selMap});box.append(m)}
-}
-$('qs').onclick=search;$('q').addEventListener('keydown',e=>{if(e.key==='Enter')search();e.stopPropagation()});
 $('nm').addEventListener('keydown',e=>e.stopPropagation());
+function mpPanel(k){
+  $('mp-pub').style.display=k==='pub'?'block':'none';$('mp-prv').style.display=k==='prv'?'block':'none';
+  $('mpb-pub').classList.toggle('on',k==='pub');$('mpb-prv').classList.toggle('on',k==='prv');
+  if(k==='pub')refreshPublic();
+}
+function mpOpen(){$('mpwho').textContent='Playing as '+P.icon+' '+P.name+' (change your name at the top of the menu). Map: '+MAPNAME[selMap]+' (pick it in the PLAY tab).';mpMsg('');if($('mp-pub').style.display!=='none')refreshPublic()}
+$('mpb-pub').onclick=()=>mpPanel('pub');$('mpb-prv').onclick=()=>mpPanel('prv');
+$('mp-cpub').onclick=()=>mpStart('pub-host');$('mp-cprv').onclick=()=>mpStart('prv-host');$('mp-ref').onclick=refreshPublic;
+$('mp-join').onclick=()=>{const code=$('mp-code').value.toUpperCase().replace(/[^A-Z0-9]/g,'');if(code.length<4){mpMsg('Type the lobby code your friend gave you.');return}mpStart('join',{id:PFX+'prv-'+code,kind:'prv',code})};
+$('mp-code').addEventListener('keydown',e=>{if(e.key==='Enter')$('mp-join').click();e.stopPropagation()});
 async function begin(mode,target){
   try{renderer.domElement.requestPointerLock()}catch(e){}
   const n=cleanName($('nm').value);
   if(n.length>=3&&n!==P.reg){if(!(await saveName())){document.exitPointerLock();showTab('play');return}}
   let rname='';
-  if(mode==='pub')rname='pub-'+selMap;else if(mode==='priv')rname='r-'+slug(P.name)+'-'+selMap;else if(mode==='join'){rname=target.room;pickMap(target.map)}
+  if(mode==='join'){rname=target.room;pickMap(target.map)}
   const key=selMap+'|'+rname;
   if(key!==applied){
     applied=key;ST.m++;persist();loadMap(selMap);clearBots();drops.forEach(d=>scene.remove(d.m));drops.length=0;
@@ -859,7 +985,7 @@ async function begin(mode,target){
     let ok=false;if(rname)ok=await joinRoom(rname);else await leaveRoom();
     curRoom=ok?rname:'';
     if(!ok){if(rname)feed('Lobby unavailable - playing solo');BOT_TYPES.forEach(t=>makeBot(t))}
-    sw(hotbar().some(w=>w.id===P.cur)?P.cur:'rifle');heartbeat();
+    sw(hotbar().some(w=>w.id===P.cur)?P.cur:'rifle');
   }
   updateHUD();
 }
@@ -876,10 +1002,10 @@ $('play').onclick=()=>{
 };
 $('dres').onclick=()=>{respawnNow();resumeInput()};
 $('dshop').onclick=()=>{respawnNow();$('menu').style.display='flex';showTab('store');renderStore()};
-$('dmenu').onclick=()=>{respawnNow();applied='';$('menu').style.display='flex';showTab('play')};
+$('dmenu').onclick=()=>{respawnNow();if(nroom)leaveRoom();applied='';$('menu').style.display='flex';showTab('play')};
 $('pres').onclick=()=>{$('pause').style.display='none';resumeInput()};
 $('pshop').onclick=openStore;
-$('pmenu').onclick=()=>{$('pause').style.display='none';applied='';$('menu').style.display='flex';showTab('play')};
+$('pmenu').onclick=()=>{$('pause').style.display='none';if(nroom)leaveRoom();applied='';$('menu').style.display='flex';showTab('play')};
 document.querySelectorAll('.sens').forEach(el=>{el.value=P.sens;el.oninput=()=>{P.sens=+el.value;document.querySelectorAll('.sens').forEach(x=>x.value=P.sens);try{localStorage.setItem('bs3sens',P.sens)}catch(e){}}});
 loadMap('yard');sw('rifle');renderStore();renderProfile();updateHUD();loop();
 })();
