@@ -26,7 +26,7 @@ Open `index.html` in a browser. It needs an internet connection, because it load
 ## Built with
 - [three.js](https://threejs.org/) for the 3D graphics
 - Plain HTML, CSS and JavaScript, all in one file
-- Built with help from Claude by Anthropic
+  
 
 ## Contact
 Questions or ideas? Open an issue on this repository.
