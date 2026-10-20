@@ -13,7 +13,7 @@ A fast, free browser shooter with colorful voxel-style maps. Fight smart bots, c
 - **Profile:** pick an avatar, track your kills, deaths and matches, and unlock rank titles up to *Voxel Legend*
 - **Touch controls** for phones and tablets: hold FIRE and slide your thumb to aim
 - Your progress is saved in your browser
-- Online multiplayer is **coming soon**
+- Online multiplayer is available with public and private lobbies
 
 ## Controls
 **Computer:** WASD move · Shift sprint · Space jump · Click shoot · Right-click aim · R reload · 1-9, Q, E or mouse wheel switch weapons · B weapon store · Esc pause
