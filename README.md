@@ -3,7 +3,7 @@
 A fast, free browser shooter with colorful voxel-style maps. Fight smart bots, collect loot, and unlock new weapons. It runs on computers, phones and tablets with nothing to install.
 
 ## ▶ Play now
-**https://voxelcombat.netlify.app**
+**https://vexstrike.netlify.app**
 
 ## Features
 - **6 maps:** Crate Yard, Neon Rooftops, Frost Fortress, Lunar Base (low gravity), Desert Ruins (hidden loot boxes) and Factory (conveyor belts and cranes)
