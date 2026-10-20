@@ -1,4 +1,4 @@
-# 🎯 VOXEL COMBAT 3
+# 🎯 VEXSTRIKE
 
 A fast, free browser shooter with colorful voxel-style maps. Fight smart bots, collect loot, and unlock new weapons. It runs on computers, phones and tablets with nothing to install.
 
